@@ -162,7 +162,7 @@ function App() {
             disabled={!continent}
             {...warning && {
               error: true,
-              errorMessage: 'Are you sure you want to go this country?',
+              errorMessage: 'Are you sure you want to go to this country?',
             }}
           />
         </div>
