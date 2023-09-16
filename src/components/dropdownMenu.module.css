@@ -68,6 +68,10 @@
 	background-repeat: no-repeat;
 }
 
+.dropdownButton.open::after{
+	background-image: url('./images/chevron-up.svg');
+}
+
 .dropdownButton .muted{
 	color: rgba(0,0,0,.5);
 }

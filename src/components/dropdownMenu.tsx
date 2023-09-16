@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useDeferredValue, useRef, SyntheticEvent } from "react";
+import React, { useState, useEffect, useDeferredValue, useRef, SyntheticEvent } from "react";
 import style from './dropdownMenu.module.css';
 import { ContinentCode, CountryCode } from "../types/api";
 import classNames from 'classnames';
@@ -23,8 +23,8 @@ export interface DropdownMenu {
 const DropdownMenu: React.FC<DropdownMenu> = (props) => {
 	const [isOpen, setIsOpen] = useState<Boolean>(false);
 	const [selected, setSelected] = useState<Option | null>(null);
-	const buttonRef = useRef(null);
-	const menuRef = useRef(null);
+	const buttonRef = useRef<HTMLButtonElement | null>(null);
+	const menuRef = useRef<HTMLUListElement | null>(null);
 	const deferredSelected = useDeferredValue(selected);
 
 	useEffect(() => {
@@ -50,12 +50,35 @@ const DropdownMenu: React.FC<DropdownMenu> = (props) => {
 		setIsOpen(false);
 	}
 
+	useEffect(() => {
+    const handleCloseMenu = (event: MouseEvent):void => {
+      if(!menuRef.current?.contains(event.target as Node) && !buttonRef.current?.contains(event.target as Node)){
+        setIsOpen(false);
+      }
+    }
+
+    const handleBlur = ():void => {
+      setIsOpen(false);
+    }
+
+    if(isOpen){
+      document.addEventListener('mousedown', handleCloseMenu)
+      window.addEventListener('blur', handleBlur)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleCloseMenu)
+      window.removeEventListener('blur', handleBlur)
+    }
+  }, [ isOpen ])
+
 	return (
     <div className={`${style.dropdownContainer} ${props.className || ""}`}>
       <button
 				className={classNames({
 					[style.dropdownButton]: true,
 					[style.error]: props.error,
+					[style.open]: isOpen,
 				})}
         onClick={toggleMenu}
         role="button"
